@@ -1,7 +1,15 @@
 {
-  "name": "socket-chat-example",
+  "name": "chat-server",
   "version": "0.0.1",
-  "description": "my first socket.io app",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fakeburst/chat-server.git"
+  },
+  "description": "kek",
   "dependencies": {
     "bcrypt": "^1.0.2",
     "cfenv": "^1.0.4",

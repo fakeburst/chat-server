@@ -11,6 +11,7 @@
   },
   "description": "kek",
   "dependencies": {
+    "assert": "^1.4.1",
     "bcrypt": "^1.0.2",
     "cfenv": "^1.0.4",
     "express": "^4.15.3",

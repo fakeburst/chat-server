@@ -3,6 +3,9 @@ var mongoose = require('mongoose');
 var autoIncrement = require('mongoose-auto-increment');
 autoIncrement.initialize(mongoose.connection);
 
+var assert = require('assert');
+var util = require('util');
+
 var cfenv = require('cfenv');
 var appenv = cfenv.getAppEnv();
 var services = appenv.services;

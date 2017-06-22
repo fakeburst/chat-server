@@ -4,10 +4,13 @@
   "description": "my first socket.io app",
   "dependencies": {
     "bcrypt": "^1.0.2",
+    "cfenv": "^1.0.4",
     "express": "^4.15.3",
+    "mongodb": "^2.2.29",
     "mongoose": "^4.10.6",
     "mongoose-auto-increment": "^5.0.1",
     "require_tree": "^0.6.8",
-    "socket.io": "^2.0.3"
+    "socket.io": "^2.0.3",
+    "util": "^0.10.3"
   }
 }

@@ -9,5 +9,7 @@ var MsgSchema = new mongoose.Schema({
 		type: String,
 		require: true 
 	},
-	created: new Date()
-})
+	created: Date
+});
+
+module.exports = mongoose.model('message', MsgSchema);

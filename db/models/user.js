@@ -6,11 +6,11 @@ var UserSchema = new mongoose.Schema({
 	username: {
 		type: String,
 		unique: true,
-		required: true,
+		required: true
 	},
 	password: {
 		type: String,
-		required: true,
+		required: true
 	}
 })
 
@@ -42,4 +42,4 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
     });
 };
 
-mongoose.model('user', UserSchema);
+module.exports = mongoose.model('user', UserSchema);

@@ -1,0 +1,7 @@
+---
+applications:
+- name:    chat-server
+  host:    chat-server1337
+  memory:  128M
+  services:
+    - my-compose-for-mongodb-service

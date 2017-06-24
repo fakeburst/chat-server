@@ -3,5 +3,8 @@ applications:
 - name:    chat-server
   host:    chat-server1337
   memory:  128M
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack.git
+  command: node index.js 
+  instances: 1
   services:
     - my-compose-for-mongodb-service

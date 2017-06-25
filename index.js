@@ -5,6 +5,8 @@ var mongoose = require('mongoose');
 require('./db/initMongooseLocal')();
 var User = mongoose.model('User');
 
+var port = process.env.PORT || 8080;
+
 var bodyParser = require('body-parser')
 app.use(bodyParser.json() );       
 app.use(bodyParser.urlencoded({    
@@ -70,7 +72,7 @@ app.post('/login', function(req, res) {
 
 io.on('connection', function(socket) {
     console.log('a user connected');
-
+    
     socket.on('disconnect', function() {
         console.log('user disconnected');
     });
@@ -86,8 +88,6 @@ io.on('connection', function(socket) {
         socket.emit('current users', currentUsers);
         socket.broadcast.emit('new user online', name);
     });
-});
 
-http.listen(3000, function() {
-    console.log('listening on *:3000');
-});
+http.listen(port, function(){
+  console.log('listening on *:'+port);

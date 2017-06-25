@@ -12,4 +12,4 @@ var MsgSchema = new mongoose.Schema({
 	created: Date
 });
 
-module.exports = mongoose.model('message', MsgSchema);
+module.exports = mongoose.model('Message', MsgSchema);

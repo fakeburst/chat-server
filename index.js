@@ -2,7 +2,7 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mongoose = require('mongoose');
-require('./db/initMongooseLocal')();
+require('./db/initMongoose')();
 require ('mongoose-pagination');
 var User = mongoose.model('User');
 var Message = mongoose.model('Message');

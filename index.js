@@ -86,6 +86,23 @@ app.post('/login', function(req, res) {
     });
 })
 
+app.post('/register', function(req, res) {
+	var newUser = new User(req.body.username, req.body.password);
+	new.User.save(function(err, data){
+		if(err){
+			res.send({
+				success: false,
+				msg: "Save error"
+			});
+			return;
+		}
+		res.send({
+			success: true,
+			user: data
+		})
+	})
+})
+
 io.on('connection', function(socket) {
     console.log('a user connected');
 
@@ -141,8 +158,7 @@ http.listen(port, function() {
 });
 
 
-/*TODO 
-	exit button 
-	register
+/*TODO  
 	load more
+*/
 	

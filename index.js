@@ -3,6 +3,7 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mongoose = require('mongoose');
 require('./db/initMongooseLocal')();
+require ('mongoose-pagination');
 var User = mongoose.model('User');
 var Message = mongoose.model('Message');
 var bodyParser = require('body-parser')
@@ -33,7 +34,13 @@ testUser.save(function(err) {
 });*/
 
 var currentUsers = [];
+//TODO if empty add messages from db
 var lastMsgs = [];
+var lastMsgNum = 1;
+
+Message.find().paginate(lastMsgNum, lastMsgNum + 10).exec(function(err, data) {
+	lastMsgs = data;
+})
 
 app.get('/', function(req, res) {
     res.send('<h1>Hello world</h1>');
@@ -43,20 +50,27 @@ app.post('/login', function(req, res) {
     //console.log(req.body);
     //console.log("-------------------");
 
+    if(currentUsers.indexOf(req.body.user_login) != -1){
+    	res.send({
+    		success: false,
+    		msg: "Already logged in"
+    	});
+    	return;
+    }
+
     User.findOne({
         username: req.body.user_login
     }, function(err, user) {
         if (err || !user) {
             res.send({
-                    success: false
+                    success: false,
+                    msg: "No such user"
                 })
-                //console.log(err);
             return;
         }
 
         user.comparePassword(req.body.user_password, function(err, isMatch) {
             if (err) throw err;
-            //console.log(req.body.user_password, isMatch); // -&gt; Password123: true
             if (isMatch) {
                 res.send({
                     success: true,
@@ -64,7 +78,8 @@ app.post('/login', function(req, res) {
                 });
             } else {
                 res.send({
-                    success: false
+                    success: false,
+                    msg: "Password Incorrect"
                 })
             }
         });
@@ -93,6 +108,9 @@ io.on('connection', function(socket) {
         message.save(function(err) {
             if (err) throw err;
         });
+        lastMsgs.push(message);
+        if(lastMsgs.length > 10)
+        	lastMsgs.shift();
     });
 
     socket.on('logged', function(name) {
@@ -100,15 +118,20 @@ io.on('connection', function(socket) {
         socket.username = name;
         currentUsers.push(name);
         socket.emit('current users', currentUsers);
+        socket.emit('last messages', lastMsgs);
         socket.broadcast.emit('new user online', name);
     });
 
     socket.on('typing', function() {
-    	io.emit('typing', socket.username);
+    	socket.broadcast.emit('typing', socket.username);
     })
 
     socket.on('stop typing', function() {
-    	io.emit('stop typing', socket.username);
+    	socket.broadcast.emit('stop typing', socket.username);
+    })
+
+    socket.on('load more', function() {
+
     })
 
 });
@@ -116,3 +139,10 @@ io.on('connection', function(socket) {
 http.listen(port, function() {
     console.log('listening on *:' + port);
 });
+
+
+/*TODO 
+	exit button 
+	register
+	load more
+	

@@ -19,6 +19,7 @@
     "mongodb": "^2.2.29",
     "mongoose": "^4.10.6",
     "mongoose-auto-increment": "^5.0.1",
+    "mongoose-pagination": "https://registry.npmjs.org/mongoose-pagination/-/mongoose-pagination-1.0.0.tgz",
     "require_tree": "^0.6.8",
     "socket.io": "^2.0.3",
     "underscore": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz",

@@ -754,6 +754,11 @@
       "from": "mongoose-auto-increment@>=5.0.1 <6.0.0",
       "resolved": "https://registry.npmjs.org/mongoose-auto-increment/-/mongoose-auto-increment-5.0.1.tgz"
     },
+    "mongoose-pagination": {
+      "version": "1.0.0",
+      "from": "https://registry.npmjs.org/mongoose-pagination/-/mongoose-pagination-1.0.0.tgz",
+      "resolved": "https://registry.npmjs.org/mongoose-pagination/-/mongoose-pagination-1.0.0.tgz"
+    },
     "mpath": {
       "version": "0.3.0",
       "from": "mpath@0.3.0",

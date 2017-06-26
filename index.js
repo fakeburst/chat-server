@@ -36,9 +36,8 @@ testUser.save(function(err) {
 var currentUsers = [];
 //TODO if empty add messages from db
 var lastMsgs = [];
-var lastMsgNum = 1;
 
-Message.find().paginate(lastMsgNum, lastMsgNum + 10).exec(function(err, data) {
+Message.find().paginate(1, 10).exec(function(err, data) {
 	lastMsgs = data;
 })
 
@@ -88,7 +87,7 @@ app.post('/login', function(req, res) {
 
 app.post('/register', function(req, res) {
 	var newUser = new User(req.body.username, req.body.password);
-	new.User.save(function(err, data){
+	newUser.save(function(err, data){
 		if(err){
 			res.send({
 				success: false,
@@ -133,6 +132,7 @@ io.on('connection', function(socket) {
     socket.on('logged', function(name) {
         console.log('logged: ' + name);
         socket.username = name;
+        socket.lastMsg = 11;
         currentUsers.push(name);
         socket.emit('current users', currentUsers);
         socket.emit('last messages', lastMsgs);
@@ -148,7 +148,7 @@ io.on('connection', function(socket) {
     })
 
     socket.on('load more', function() {
-
+    	socket.emit
     })
 
 });

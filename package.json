@@ -2,6 +2,7 @@
   "name": "chat-server",
   "version": "0.1.1",
   "main": "index.js",
+  "productName": "FeelsChatMan",
   "scripts": {
     "start": "node index.js"
   },
@@ -10,6 +11,9 @@
     "url": "git+https://github.com/fakeburst/chat-server.git"
   },
   "description": "server for chat",
+  "devDependencies": {
+    "electron": "1.4.15"
+  },
   "dependencies": {
     "assert": "^1.4.1",
     "bcrypt": "^1.0.2",
@@ -20,6 +24,7 @@
     "mongoose": "^4.10.6",
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-pagination": "https://registry.npmjs.org/mongoose-pagination/-/mongoose-pagination-1.0.0.tgz",
+    "mongoose-unique-validator": "^1.0.5",
     "require_tree": "^0.6.8",
     "socket.io": "^2.0.3",
     "underscore": "https://registry.npmjs.org/underscore/-/underscore-1.8.3.tgz",

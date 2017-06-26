@@ -2,8 +2,8 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var mongoose = require('mongoose');
-require('./db/initMongoose')();
-require ('mongoose-pagination');
+require('./db/initMongooseLocal')();
+require('mongoose-pagination');
 var User = mongoose.model('User');
 var Message = mongoose.model('Message');
 var bodyParser = require('body-parser')
@@ -38,8 +38,8 @@ var currentUsers = [];
 var lastMsgs = [];
 
 Message.find().paginate(1, 10).exec(function(err, data) {
-	lastMsgs = data;
-	console.log("Messages retrieved")
+    lastMsgs = data;
+    console.log("Messages retrieved")
 })
 
 app.get('/', function(req, res) {
@@ -50,12 +50,12 @@ app.post('/login', function(req, res) {
     //console.log(req.body);
     //console.log("-------------------");
 
-    if(currentUsers.indexOf(req.body.user_login) != -1){
-    	res.send({
-    		success: false,
-    		msg: "Already logged in"
-    	});
-    	return;
+    if (currentUsers.indexOf(req.body.user_login) != -1) {
+        res.send({
+            success: false,
+            msg: "Already logged in"
+        });
+        return;
     }
 
     User.findOne({
@@ -63,9 +63,9 @@ app.post('/login', function(req, res) {
     }, function(err, user) {
         if (err || !user) {
             res.send({
-                    success: false,
-                    msg: "No such user"
-                })
+                success: false,
+                msg: "No such user"
+            })
             return;
         }
 
@@ -87,23 +87,30 @@ app.post('/login', function(req, res) {
 })
 
 app.post('/register', function(req, res) {
-	var newUser = new User({
-		username: req.body.username, 
-		password: req.body.password
-	});
-	newUser.save(function(err, data){
-		if(err){
-			res.send({
-				success: false,
-				msg: "Save error"
-			});
-			return;
-		}
-		res.send({
-			success: true,
-			user: data
-		})
-	})
+    var newUser = new User({
+        username: req.body.username,
+        password: req.body.password
+    });
+    newUser.save(function(err, data) {
+        if (err) {
+            if (err.name == "ValidationError") {
+                res.send({
+                    success: false,
+                    msg: "Such username already exists"
+                });
+                return;
+            }
+            res.send({
+                success: false,
+                msg: "Save error"
+            });
+            return;
+        }
+        res.send({
+            success: true,
+            user: data
+        })
+    })
 })
 
 io.on('connection', function(socket) {
@@ -129,8 +136,8 @@ io.on('connection', function(socket) {
             if (err) throw err;
         });
         lastMsgs.push(message);
-        if(lastMsgs.length > 10)
-        	lastMsgs.shift();
+        if (lastMsgs.length > 10)
+            lastMsgs.shift();
     });
 
     socket.on('logged', function(name) {
@@ -144,15 +151,18 @@ io.on('connection', function(socket) {
     });
 
     socket.on('typing', function() {
-    	socket.broadcast.emit('typing', socket.username);
+        socket.broadcast.emit('typing', socket.username);
     })
 
     socket.on('stop typing', function() {
-    	socket.broadcast.emit('stop typing', socket.username);
+        socket.broadcast.emit('stop typing', socket.username);
     })
 
     socket.on('load more', function() {
-    	socket.emit
+        Message.find().paginate(socket.lastMsg, socket.lastMsg + 9).exec(function(err, data) {
+            socket.lastMsg += 10;
+            socket.emit('load more', data);
+        })
     })
 
 });
@@ -165,4 +175,3 @@ http.listen(port, function() {
 /*TODO  
 	load more
 */
-	

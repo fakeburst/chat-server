@@ -17,7 +17,7 @@ module.exports = function() {
     });
 
     try {
-        mongoose.connect("mongodb://lolkek:cheburek@ds139322.mlab.com:39322/kek");
+        mongoose.connect("mongodb://localhost:27017/chat");
     } catch (err) {
         console.log(err);
     }

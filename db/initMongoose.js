@@ -36,7 +36,7 @@ var mongodb_con =
 var appenv = cfenv.getAppEnv();
 var services = appenv.services;
 var mongodb_services = services["compose-for-mongodb"];
-assert(!util.isUndefined(mongodb_services), "Must be bound to compose-for-mongodb services");
+// assert(!util.isUndefined(mongodb_services), "Must be bound to compose-for-mongodb services");
 var credentials = mongodb_con.credentials;
 var ca = [mongodb_con.ca_certificate_base64];
 
@@ -55,20 +55,13 @@ module.exports = function() {
     });
 
     try {
-        mongoose.connect(mongodb_con.credentials.uri, {
-                mongos: {
-                    ssl: true,
-                    sslValidate: true,
-                    sslCA: ca,
-                    poolSize: 1,
-                    reconnectTries: 1
-                }
-            },
+        mongoose.connect("mongodb://lolkek:cheburek@ds139322.mlab.com:39322/kek",  ['mohd'],
             function(err, db) {
                 if (err) {
                     console.log(err);
                 } else {
-                    mongoose.useDb("chat");
+                    return db;
+                    // mongoose.useDb("chat");
                 }
             });
     } catch (err) {

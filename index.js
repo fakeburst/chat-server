@@ -39,6 +39,7 @@ var lastMsgs = [];
 
 Message.find().paginate(1, 10).exec(function(err, data) {
 	lastMsgs = data;
+	console.log("Messages retrieved")
 })
 
 app.get('/', function(req, res) {
@@ -132,7 +133,7 @@ io.on('connection', function(socket) {
     socket.on('logged', function(name) {
         console.log('logged: ' + name);
         socket.username = name;
-        socket.lastMsg = 11;
+        socket.lastMsg = lastMsgs.length + 1;
         currentUsers.push(name);
         socket.emit('current users', currentUsers);
         socket.emit('last messages', lastMsgs);

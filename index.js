@@ -88,7 +88,7 @@ app.post('/login', function(req, res) {
 
 app.post('/register', function(req, res) {
 	var newUser = new User(req.body.username, req.body.password);
-	new.User.save(function(err, data){
+	new User.save(function(err, data){
 		if(err){
 			res.send({
 				success: false,

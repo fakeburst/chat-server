@@ -6,7 +6,8 @@ require('./db/initMongooseLocal')();
 require('mongoose-pagination');
 var User = mongoose.model('User');
 var Message = mongoose.model('Message');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var mongoosePaginate = require('mongoose-paginate');
 
 var port = process.env.PORT || 8080;
 
@@ -35,12 +36,20 @@ testUser.save(function(err) {
 
 var currentUsers = [];
 //TODO if empty add messages from db
+var numOfMsgs;
 var lastMsgs = [];
 
-Message.find().paginate(1, 10).exec(function(err, data) {
-    lastMsgs = data;
-    console.log("Messages retrieved")
-})
+Message.count({}, function(err, count) {
+    console.log("Number of messages: ", count);
+    numOfMsgs = count;
+    Message.paginate({}, {
+        offset: count - 10,
+        limit: 10
+    }, function(err, result) {
+        lastMsgs = result.docs;
+        console.log("Messages retrieved")
+    });
+});
 
 app.get('/', function(req, res) {
     res.send('<h1>Hello world</h1>');
@@ -88,8 +97,8 @@ app.post('/login', function(req, res) {
 
 app.post('/register', function(req, res) {
     var newUser = new User({
-        username: req.body.username,
-        password: req.body.password
+        username: req.body.user_login,
+        password: req.body.user_password
     });
     newUser.save(function(err, data) {
         if (err) {
@@ -143,7 +152,7 @@ io.on('connection', function(socket) {
     socket.on('logged', function(name) {
         console.log('logged: ' + name);
         socket.username = name;
-        socket.lastMsg = lastMsgs.length + 1;
+        socket.lastMsg = numOfMsgs - 10;
         currentUsers.push(name);
         socket.emit('current users', currentUsers);
         socket.emit('last messages', lastMsgs);
@@ -159,10 +168,32 @@ io.on('connection', function(socket) {
     })
 
     socket.on('load more', function() {
-        Message.find().paginate(socket.lastMsg, socket.lastMsg + 9).exec(function(err, data) {
-            socket.lastMsg += 10;
-            socket.emit('load more', data);
-        })
+    	if(socket.lastMsg == 0){
+    		socket.emit('load more', "Already all messages");
+    		return;
+    	}
+    	let tmp = socket.lastMsg;
+    	let tmp_limit = 10;
+    	if(tmp < 10){
+    		tmp_limit = tmp; 
+    		tmp = 10;
+    	}
+    	console.log(socket.lastMsg);
+    	console.log(tmp);
+        Message.paginate({}, {
+            offset: tmp - 10,
+            limit: tmp_limit
+        }, function(err, result) {
+            if (err) console.log(err);
+            console.log(result.docs.length);
+            if (result) {
+            	if(socket.lastMsg < 10)
+            		socket.lastMsg = 0;
+            	else
+                	socket.lastMsg -= 10;
+                socket.emit('load more', result.docs);
+            }
+        });
     })
 
 });
@@ -170,8 +201,3 @@ io.on('connection', function(socket) {
 http.listen(port, function() {
     console.log('listening on *:' + port);
 });
-
-
-/*TODO  
-	load more
-*/

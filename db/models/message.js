@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 
 var MsgSchema = new mongoose.Schema({
 	username: {
@@ -11,5 +12,7 @@ var MsgSchema = new mongoose.Schema({
 	},
 	created: Date
 });
+
+MsgSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model('Message', MsgSchema);
